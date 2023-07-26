@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pincode Checker</title>
+  <style>
+    /* Your CSS styles here */
+  </style>
+</head>
+<body>
+  <h1>Pincode Checker</h1>
+  <input type="file" id="fileInput" accept=".csv">
+  <button onclick="checkPincode()">Check</button>
+  <div id="result"></div>
+
+  <script>
+    function checkPincode() {
+      var pincode = document.getElementById("pincode").value;
+      var validPincodeRegex = /^[1-9][0-9]{5}$/; // Regex to validate Indian pincode format
+
+      if (pincode.match(validPincodeRegex)) {
+        var fileInput = document.getElementById("fileInput");
+        var file = fileInput.files[0];
+
+        if (file) {
+          var reader = new FileReader();
+
+          reader.onload = function(event) {
+            var data = event.target.result;
+            var validPincodeList = data.split('\n').map(pincode => pincode.trim());
+
+            if (validPincodeList.includes(pincode)) {
+              displayResult("Success! The pincode is valid and serviceable.");
+            } else {
+              displayResult("The pincode is valid, but not serviceable at the moment.");
+            }
+          };
+
+          reader.onerror = function(event) {
+            console.error("Error reading file:", event.target.error);
+            displayResult("An error occurred while checking the pincode. Please try again later.");
+          };
+
+          reader.readAsText(file);
+        } else {
+          displayResult("Please select a CSV file containing valid pincodes.");
+        }
+      } else {
+        displayResult("Invalid pincode format. Please enter a valid 6-digit pincode.");
+      }
+    }
+
+    function displayResult(message) {
+      var resultElement = document.getElementById("result");
+      resultElement.innerText = message;
+    }
+  </script>
+</body>
+</html>
